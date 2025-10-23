@@ -1,7 +1,7 @@
 all: rcex example
 
-example: example.o
-	gcc example.o -o example -Wall -O2
+example: example.o rcex.o
+	gcc example.o rcex.o -o example -Wall -O2
 
 example.o: example.c
 	gcc -c -O2 -Wall example.c
@@ -14,3 +14,5 @@ rcex.o: rcex.c
 
 clean:
 	rm -f *.o *.so example
+
+
