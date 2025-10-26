@@ -7,7 +7,14 @@
 #include<assert.h>
 #include<errno.h>
 
-#define rc4decrypt(x,y)     rc4encrypt(x,y)
+#define TS                  50
+#define export              __attribute__((visibility("default")))
+#define rcexdecrypt(x,y,z)   rcexencrypt(x,y,z)
+#define rcexuninit(x)        free(x)
+#define rcexwhitewash(x, y)  for(x = 0; x < (TS * 100); x++)     \
+                                (volatile int8)rcexbyte(y);      \
+// rcexwhitewash: Drops the first 5000 bytes of rcexkeystream to improve randomness as they were too biased and leaks info about the key.
+// both encryption and decryption performs the same whitewash, skipping the same 5000 bytes and start XORing at the same position in the keystream.
 
 
 typedef unsigned char int8;
@@ -21,6 +28,6 @@ struct s_rcex{
 typedef struct s_rcex Rcex;
 
 
-Rcex * rc4init(int8 *, int16);
-int8 rc4byte(void);
-int8 * rc4encrypt(int8 *, int16);
+export Rcex * rcexinit(int8 *, int16);
+int8 rcexbyte(Rcex *);
+export int8 * rcexencrypt(Rcex *, int8 *, int16);

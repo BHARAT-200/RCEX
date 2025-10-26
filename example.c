@@ -37,17 +37,25 @@ int main(){
     stext = strlen((char*)from);
 
     printf("Init encryption"); F;
-    rc4 = rc4init(key, skey);
-    printf("\ndone\n");
+    rc4 = rcexinit(key, skey);
+    printf("\t done\n");
 
-    printf("'%s'\n -> ", from);
-    // encrypted = rc4encrypt(from, stext);
-    printbin(key, skey);
+    printf("'%s'\t -> ", from);
+    encrypted = rcexencrypt(rc4, from, stext);
+    printbin(encrypted, stext);
 
+    rcexuninit(rc4);
 
-    printf("\nrc4 after inti:-"); F;
-    printbin(rc4->s, skey);
+    
+    printf("Init encryption"); F;
+    rc4 = rcexinit(key, skey);  // Reinitialize RC4 with the same key before decrypting (same keystream ensures correct decryption)
+    printf("\tdone\n");
 
-    for(int i=0; i<skey; printf("s->[%d] = %d\n", i, rc4->s[i]), i++);
+    decrypted = rcexdecrypt(rc4, encrypted, stext);
+    printf("        -> '%s'\n", decrypted);
+    rcexuninit(rc4);
+
+    free(encrypted);
+    free(decrypted);
 
 }
