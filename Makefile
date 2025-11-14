@@ -1,18 +1,21 @@
-all: rcex example
+# --- Build RCEX + Example program ---
 
-example: example.o rcex.o
-	gcc example.o rcex.o -o example -Wall -O2
+CC      = gcc
+CFLAGS  = -Wall -O2 -I.
+LDFLAGS = -shared -fPIC
 
-example.o: example.c
-	gcc -c -O2 -Wall example.c
+all: librcex.so example
 
-rcex: rcex.o 
-	gcc rcex.o -o rcex.so -O2 -Wall -fPIC -shared -ldl -D_GNU_SOURCE
+rcex.o: rcex.c rcex.h
+	$(CC) -c rcex.c $(CFLAGS)
 
-rcex.o: rcex.c
-	gcc -c -O2 -Wall  rcex.c
+librcex.so: rcex.o
+	$(CC) rcex.o -o librcex.so $(LDFLAGS)
 
 clean:
-	rm -f *.o *.so example
+	rm -f *.o *.so example encrypt
 
+.PHONY: all clean
 
+encrypt: encrypt.o rcex.o
+	$(CC) encrypt.o rcex.o -o encrypt $(CFLAGS)
