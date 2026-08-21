@@ -1,4 +1,3 @@
-// rcex.h
 #pragma once
 #include<stdio.h>
 #include<unistd.h>
@@ -31,3 +30,13 @@ typedef struct s_rcex Rcex;
 export Rcex * rcexinit(int8 *, int16);
 int8 rcexbyte(Rcex *);
 export int8 * rcexencrypt(Rcex *, int8 *, int16);
+
+#define MACLEN              16   // bytes in the tag produced by rcexmac()
+
+// added more security layers below;
+export int16   rcexvalidate(int8 *, int16);
+export int16   rcexrandbytes(int8 *, int16);
+export Rcex *  rcexinit_nonce(int8 *, int16, int8 *, int16);
+export void    rcexwipe(Rcex *);
+export void    rcexmac(int8 *, int16, int8 *, int16, int8 *);
+export int16   rcexverify(int8 *, int16, int8 *, int16, int8 *);
